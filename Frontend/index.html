@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSCore — Inside the System</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-icon">O</span><div><b>OSCore</b><small>INSIDE THE SYSTEM</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav active" href="#overview">▦ <span>Overview</span></a>
+    <a class="nav" href="#processes">▤ <span>Process manager</span></a>
+    <a class="nav" href="#resources">◈ <span>Resources</span></a>
+    <div class="sidebar-bottom"><span class="status-dot"></span> Simulation environment</div>
+  </aside>
+
+  <main class="main" id="overview">
+    <header class="topbar">
+      <div><div class="eyebrow">OPERATING SYSTEM VISUALIZER</div><h1>Inside the System</h1><p>Explore scheduling, synchronization and deadlock behavior.</p></div>
+      <div class="top-actions"><span id="apiStatus" class="pill">Connecting…</span><button id="detailsToggle" class="secondary">☷ System details</button></div>
+    </header>
+
+    <section class="stats">
+      <article class="stat"><span>SIMULATION CLOCK</span><strong id="clock">0</strong><small>ticks elapsed</small></article>
+      <article class="stat"><span>ACTIVE PROCESSES</span><strong id="activeCount">0</strong><small>not yet terminated</small></article>
+      <article class="stat"><span>BLOCKED PROCESSES</span><strong id="blockedCount">0</strong><small>waiting for resources</small></article>
+      <article class="stat"><span>COMPLETED</span><strong id="completedCount">0</strong><small>terminated processes</small></article>
+    </section>
+
+    <section class="card feature-guide">
+      <div class="section-heading"><div><span class="eyebrow">LEARN BY EXPLORING</span><h2>What is each feature doing?</h2></div><span class="pill">Interactive guide</span></div>
+      <p class="muted">Choose a concept to see what the simulator models, how it works, and what to watch on screen.</p>
+      <div class="guide-controls" id="guideControls">
+        <button class="guide-button active" data-feature="process_management">Process management</button>
+        <button class="guide-button" data-feature="scheduling">FCFS scheduling</button>
+        <button class="guide-button" data-feature="synchronization">Synchronization</button>
+        <button class="guide-button" data-feature="deadlock">Deadlock</button>
+        <button class="guide-button" data-feature="banker">Banker’s algorithm</button>
+        <button class="guide-button" data-feature="database">Database</button>
+      </div>
+      <div class="guide-copy"><div><h3>WHAT IT IS</h3><p id="featureWhat">Loading explanation…</p></div><div><h3>HOW IT WORKS HERE</h3><p id="featureHow"></p></div><div><h3>WHAT TO OBSERVE</h3><p id="featureObserve"></p></div></div>
+      <div class="guide-footer"><button class="primary" id="runBanker">Run Banker’s safety demo</button><button class="secondary" data-action="reset">Reset simulation</button></div>
+      <div id="bankerResult" aria-live="polite"></div>
+    </section>
+
+    <div class="layout">
+      <section class="card desktop-card">
+        <div class="section-heading"><div><span class="eyebrow">INTERACTIVE WORKLOAD</span><h2>Simulated desktop</h2></div><span class="live"><i></i> LIVE</span></div>
+        <p class="muted">Launch an action to create a process in the simulation.</p>
+        <div class="desktop">
+          <button class="app-tile" data-action="open_website"><span class="tile-icon browser">◎</span><b>Open Website</b><small>Browser process</small></button>
+          <button class="app-tile" data-action="print_document"><span class="tile-icon printer">▤</span><b>Print Document</b><small>Requests printer</small></button>
+          <button class="app-tile" data-action="copy_files"><span class="tile-icon files">▧</span><b>Copy Files</b><small>Requests file lock</small></button>
+          <button class="app-tile" data-action="print_another"><span class="tile-icon printer">▤</span><b>Print Another</b><small>Competes for printer</small></button>
+        </div>
+        <div class="action-row"><button class="primary" data-action="run_mock_simulation">▶ Run mock simulation</button><button class="secondary" data-action="generate_tasks">＋ Add sample tasks</button><button class="danger" data-action="demonstrate_deadlock">⚠ Demonstrate deadlock</button><button class="secondary" data-action="recover_deadlock">Recover deadlock</button></div>
+        <div id="deadlockBanner" class="deadlock-banner hidden"></div>
+      </section>
+
+      <section class="card cpu-card">
+        <div class="section-heading"><div><span class="eyebrow">PROCESSOR</span><h2>CPU status</h2></div><span class="pill">FCFS</span></div>
+        <div class="cpu-box"><div class="cpu-chip">CPU</div><strong id="cpuProcess">Idle</strong><small id="cpuSub">Waiting for work</small></div>
+        <div class="mini-heading">READY QUEUE <span id="queueCount">0</span></div>
+        <div id="readyQueue" class="queue"><span class="muted">No processes queued</span></div>
+        <button class="secondary full" data-action="tick">Advance simulation →</button>
+      </section>
+
+      <section class="card" id="processes">
+        <div class="section-heading"><div><span class="eyebrow">PROCESS MANAGEMENT</span><h2>Process table</h2></div><span class="pill">FCFS scheduling</span></div>
+        <div class="table-wrap"><table><thead><tr><th>PID</th><th>PROCESS</th><th>BURST</th><th>REMAINING / EXECUTION TIME</th><th>STATE</th></tr></thead><tbody id="processTable"><tr><td colspan="5" class="empty">No processes yet. Launch an action above.</td></tr></tbody></table></div>
+      </section>
+
+      <section class="card" id="resources">
+        <div class="section-heading"><div><span class="eyebrow">SYNCHRONIZATION</span><h2>Resource monitor</h2></div><span class="pill">Counting semaphore</span></div>
+        <div id="resourceList" class="resource-list"></div>
+        <div class="mini-heading">CPU TIMELINE</div><div id="timeline" class="timeline"><span class="muted">Advance the simulation to build a timeline.</span></div><div class="mini-heading">RECENT EVENT LOG</div>
+        <div id="eventLog" class="event-log"><span class="muted">Events will appear here.</span></div>
+      </section>
+    </div>
+  </main>
+
+  <aside id="detailsPanel" class="details-panel">
+    <div class="panel-header"><div><span class="eyebrow">SYSTEM INSPECTOR</span><h2>System details</h2></div><button id="closeDetails" class="icon-button">×</button></div>
+    <div class="tabs"><button class="tab active" data-tab="processesTab">Processes</button><button class="tab" data-tab="schedulingTab">Scheduling</button><button class="tab" data-tab="deadlockTab">Deadlock</button><button class="tab" data-tab="syncTab">Synchronization</button></div>
+    <div class="panel-content">
+      <section id="processesTab" class="tab-content"><h3>Process overview</h3><div id="processDetails" class="detail-list"></div></section>
+      <section id="schedulingTab" class="tab-content hidden"><h3>FCFS scheduler</h3><p class="muted">First-Come, First-Served runs ready processes in arrival order.</p><div id="schedulingDetails" class="detail-list"></div></section>
+      <section id="deadlockTab" class="tab-content hidden"><h3>Deadlock analysis</h3><div id="deadlockDetails" class="detail-list"></div><h4>Four Coffman conditions</h4><div id="conditions" class="detail-list"></div></section>
+      <section id="syncTab" class="tab-content hidden"><h3>Counting semaphore</h3><div id="syncDetails" class="detail-list"></div><p class="muted">wait() acquires a permit or queues the process. signal() releases a permit and wakes a waiting process.</p></section>
+    </div>
+  </aside>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/script.js"></script>
+</body>
+</html>

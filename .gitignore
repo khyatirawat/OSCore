@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.py[cod]
+*.exe
+engine/oscope_engine
+engine/oscope_engine.exe
+.vscode/
+.venv/
+venv/
